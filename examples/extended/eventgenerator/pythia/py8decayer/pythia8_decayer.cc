@@ -26,6 +26,7 @@
 //
 /// \file eventgenerator/pythia/py8decayer/pythia8_decayer.cc
 /// \brief Main program of the pythia8_decayer example
+#include<iostream>
 
 #include "G4PhysListFactoryAlt.hh"
 #include "G4PhysListRegistry.hh"
@@ -41,6 +42,12 @@
 #include "G4SystemOfUnits.hh"
 #include "Randomize.hh"
 #include "G4GeometryManager.hh"
+
+#include "G4UImanager.hh"
+#include "G4VisManager.hh"
+#include "G4VisExecutive.hh"
+#include "G4UIExecutive.hh"
+
 
 #include "G4PhysListFactoryAlt.hh"
 
@@ -138,6 +145,10 @@ int main(int argc,char** argv)
       runManager->ProcessOneEvent( iev );
    }
 
+ 
+
+
+
    // It speaks for itself ^_^
    //
    runManager->RunTermination();
@@ -146,7 +157,32 @@ int main(int argc,char** argv)
    // Free the store: user actions, physics_list and detector_description are
    //                 owned and deleted by the run manager, so they should not
    //                 be deleted in the main() program !
-   delete runManager;
+   //delete runManager;
+
+G4UIExecutive *ui = 0;
+  if(argc == 1)
+    {
+ui = new G4UIExecutive(argc,argv);
+    }
+
+  G4VisManager *visManager = new G4VisExecutive();
+  visManager->Initialize();
+
+
+ G4UImanager *UImanager = G4UImanager::GetUIpointer();
+  if(ui){
+
+
+ UImanager->ApplyCommand("/control/execute vis.mac");
+ ui->SessionStart();
+
+  }
+  else
+    {
+      G4String command = "/control/execute ";
+      G4String fileName = argv[1];
+      UImanager->ApplyCommand(command+fileName);
+}
 
    return 0;
 
