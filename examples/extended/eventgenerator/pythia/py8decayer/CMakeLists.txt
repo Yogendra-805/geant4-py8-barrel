@@ -1,6 +1,8 @@
 #----------------------------------------------------------------------------
 # Setup the project
 
+list(APPEND CMAKE_MODULE_PATH "/home/particle/geant4/geant4-v11.1.2/examples/extended/eventgenerator/pythia/py8decayer")
+
 cmake_minimum_required(VERSION 3.16...3.21)
 
 project(py8decayer)
@@ -18,31 +20,33 @@ else()
 endif()
 
 #----------------------------------------------------------------------------
-# Setup Geant4 include directories and compile definitions
-#
-include(${Geant4_USE_FILE})
-
-#----------------------------------------------------------------------------
 # Find Pythia8 (required package)
 #
 # Ideally, should be done via find_package, e.g.
 find_package(Pythia8 REQUIRED)
+#----------------------------------------------------------------------------
+# Setup Geant4 include directories and compile definitions
+#
+include(${Geant4_USE_FILE})
 
 #----------------------------------------------------------------------------
 # Locate sources and headers for this project
 #
 include_directories(${PROJECT_SOURCE_DIR}/include 
                     ${Geant4_INCLUDE_DIR}
-		    ${PYTHIA8_INCLUDES})
+                    ${PYTHIA8_INCLUDE_DIRS})
 
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc ${PROJECT_SOURCE_DIR}/src/*.c)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
-
+file(GLOB MACRO_FILES 
+         "*.mac"
+)
+file(COPY ${MACRO_FILES} DESTINATION ${PROJECT_BINARY_DIR})
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
-#
 add_executable(pythia8_decayer pythia8_decayer.cc ${sources} ${headers})
-target_link_libraries(pythia8_decayer  ${Geant4_LIBRARIES} ${PYTHIA8_LIBRARIES} )
+target_link_libraries(pythia8_decayer ${Geant4_LIBRARIES} ${PYTHIA8_LIBRARIES})
+# Add the Pythia8 include directories and libraries to your project
 
 #----------------------------------------------------------------------------
 # Copy all scripts to the build directory, i.e. the directory in which we
