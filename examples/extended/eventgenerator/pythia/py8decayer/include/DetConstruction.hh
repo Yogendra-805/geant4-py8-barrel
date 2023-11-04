@@ -46,7 +46,7 @@ class DetConstruction : public G4VUserDetectorConstruction
       // ctor & dtor
       //
       DetConstruction() : G4VUserDetectorConstruction(), 
-                          fWorld(0), fDet(0)  {}
+                          physWorld(0), fDet(0)  {}
       ~DetConstruction() {} /* we don't need to delete fWorld or fDet 
                                as it'll be done "globally" */
     
@@ -58,7 +58,7 @@ class DetConstruction : public G4VUserDetectorConstruction
 
      // data members
      //
-     G4VPhysicalVolume* fWorld;
+     G4VPhysicalVolume* physWorld;
      G4VPhysicalVolume* fDet;
 
 };

@@ -37,6 +37,7 @@
 #include "G4Tubs.hh"
 #include "G4LogicalVolume.hh"
 #include "G4PVPlacement.hh"
+#include "G4PhysicalConstants.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -51,43 +52,76 @@ G4VPhysicalVolume* DetConstruction::Construct()
       G4NistManager::Instance()->FindOrBuildMaterial("G4_C"); 
 
    // World volume
+  double xWorld = 0.8*CLHEP::m;
+  double yWorld = 0.8*CLHEP::m;
+  double zWorld = 0.8*CLHEP::m;
+   //G4ThreeVector worldSize( 200.*CLHEP::cm, 200.*CLHEP::cm, 200.*CLHEP::cm );
+  
+   G4VSolid* solidWorld = new G4Box("solidWorld",xWorld,yWorld,zWorld);
+    
+    G4LogicalVolume* logicWorld = new G4LogicalVolume(solidWorld, worldMaterial,"logicWorld");
+
+    physWorld = new G4PVPlacement(0,G4ThreeVector(0,0,0),logicWorld,"physWorld",0,false,0,true);
+
+
+  G4double x = 0.5*CLHEP::cm;
+  G4double y = 1*CLHEP::cm;
+  G4double z = 1*CLHEP::cm;
+
+  G4VSolid* sDet = new G4Box("solidScintillator",x, y,z);
+  G4LogicalVolume* lDet = new G4LogicalVolume(sDet,detMaterial,"logicalScintillator");
+  //G4LogicalSkinSurface *skin = new G4LogicalSkinSurface("skin", logicWorld, mirrorSurface);
  
-   G4ThreeVector worldSize( 200.*CLHEP::cm, 200.*CLHEP::cm, 200.*CLHEP::cm );
+  //fScoringVolume = logicScintillator;
   
+  
+  
+  // // First ring of our detector.
+  G4double theta1 = 360/(twopi*7);
+  for(G4int c=0;c<20;c++){  // cell in z-direction
+    
+    for (G4int p=0;p<twopi*7;p++){ // cell on x-y plane.
 
-   fWorld = new G4PVPlacement( 
-      0, G4ThreeVector(), 
-      "world_phys",
-      new G4LogicalVolume( new G4Box( "world_solid", 
-                                      0.5*worldSize.x(), 
-                                      0.5*worldSize.y(), 
-                                      0.5*worldSize.z() ),
-                           worldMaterial, "world_log", 0, 0, 0 ), 
-      0,
-      false, 0 );
+      G4Rotate3D rotZ(p*theta1*CLHEP::deg,G4ThreeVector(0,0,1));
+      G4Translate3D transXScint(G4ThreeVector(1./tan(theta1/2*CLHEP::deg)*CLHEP::cm +1.0*CLHEP::cm,0*CLHEP::cm,-20*CLHEP::cm+c*2*CLHEP::cm));  // Z-no change
 
-  // "Detector"
+      G4Transform3D transformScint = (rotZ)*(transXScint);
 
-  double rmin    = 10.*CLHEP::cm;
-  double rmax    = 80.*CLHEP::cm;
-  double zlength = 98.*CLHEP::cm;
+
+      fDet = new G4PVPlacement(transformScint,lDet,"physScintillator",logicWorld,false,0,true);
+    }
+    }
+
+  // Second ring of our detector.
+  G4double theta2 = 360/(twopi*14);
+  for(G4int c=0;c<20;c++){  // cell in z-direction
+    
+    for (G4int p=0;p<twopi*14;p++){ // cell on x-y plane.
+
+      G4Rotate3D rotZ(p*theta2*CLHEP::deg,G4ThreeVector(0,0,1));
+      G4Translate3D transXScint(G4ThreeVector(1./tan(theta2/2*CLHEP::deg)*CLHEP::cm+1.*CLHEP::cm,0*CLHEP::cm,-20*CLHEP::cm+c*2*CLHEP::cm));
   
-  G4VSolid* sDet = new G4Tubs( "det_solid", 
-                               rmin, rmax, 0.5*zlength, 
-                               0., 2.*CLHEP::pi );
+      G4Transform3D transformScint = (rotZ)*(transXScint);
+ 
+      fDet = new G4PVPlacement(transformScint,lDet,"physScintillator",logicWorld,false,0,true);
+    }
+    }
+  // Third ring of our detector.
+  G4double theta3 = 360/(twopi*21);
+  for(G4int c=0;c<20;c++){  // cell in z-direction
+    
+    for (G4int p=0;p<twopi*21;p++){ // cell on x-y plane.
+
+      G4Rotate3D rotZ(p*theta3*CLHEP::deg,G4ThreeVector(0,0,1));
+      G4Translate3D transXScint(G4ThreeVector(1./tan(theta3/2*CLHEP::deg)*CLHEP::cm+1.*CLHEP::cm,0*CLHEP::cm,-20*CLHEP::cm+c*2*CLHEP::cm));
   
-  G4LogicalVolume* lDet = new G4LogicalVolume( sDet, detMaterial, "det_log", 
-                                               0, 0, 0 );
-  
-  fDet = new G4PVPlacement( 0, G4ThreeVector(), "det_phys",
-                            lDet, 
-                            fWorld,  // it's mother (physical) volume 
-                            false, 0 );
-  
-  
-  //always return the root volume
-  //
-  return fWorld;
+      G4Transform3D transformScint = (rotZ)*(transXScint);
+ 
+      fDet = new G4PVPlacement(transformScint,lDet,"physScintillator",logicWorld,false,0,true);
+    }
+    }
+ 
+  return physWorld;
 
 }
 
