@@ -78,46 +78,46 @@ G4VPhysicalVolume* DetConstruction::Construct()
   
   // // First ring of our detector.
   G4double theta1 = 360/(twopi*7);
-  for(G4int c=0;c<20;c++){  // cell in z-direction
+  for(G4int c=0;c<60;c++){  // cell in z-direction
     
     for (G4int p=0;p<twopi*7;p++){ // cell on x-y plane.
 
       G4Rotate3D rotZ(p*theta1*CLHEP::deg,G4ThreeVector(0,0,1));
-      G4Translate3D transXScint(G4ThreeVector(1./tan(theta1/2*CLHEP::deg)*CLHEP::cm +1.0*CLHEP::cm,0*CLHEP::cm,-20*CLHEP::cm+c*2*CLHEP::cm));  // Z-no change
+      G4Translate3D transXScint(G4ThreeVector(1./tan(theta1/2*CLHEP::deg)*CLHEP::cm +1.0*CLHEP::cm,0*CLHEP::cm,-57.5*CLHEP::cm+c*2*CLHEP::cm));  // Z-no change
 
       G4Transform3D transformScint = (rotZ)*(transXScint);
 
 
-      fDet = new G4PVPlacement(transformScint,lDet,"physScintillator",logicWorld,false,0,true);
+      fDet = new G4PVPlacement(transformScint,lDet,"physScintillator",logicWorld,false,0,false);
     }
     }
 
   // Second ring of our detector.
   G4double theta2 = 360/(twopi*14);
-  for(G4int c=0;c<20;c++){  // cell in z-direction
+  for(G4int c=0;c<60;c++){  // cell in z-direction
     
     for (G4int p=0;p<twopi*14;p++){ // cell on x-y plane.
 
       G4Rotate3D rotZ(p*theta2*CLHEP::deg,G4ThreeVector(0,0,1));
-      G4Translate3D transXScint(G4ThreeVector(1./tan(theta2/2*CLHEP::deg)*CLHEP::cm+1.*CLHEP::cm,0*CLHEP::cm,-20*CLHEP::cm+c*2*CLHEP::cm));
+      G4Translate3D transXScint(G4ThreeVector(1./tan(theta2/2*CLHEP::deg)*CLHEP::cm+1.*CLHEP::cm,0*CLHEP::cm,-57.5*CLHEP::cm+c*2*CLHEP::cm));
   
       G4Transform3D transformScint = (rotZ)*(transXScint);
  
-      fDet = new G4PVPlacement(transformScint,lDet,"physScintillator",logicWorld,false,0,true);
+      fDet = new G4PVPlacement(transformScint,lDet,"physScintillator",logicWorld,false,0,false);
     }
     }
   // Third ring of our detector.
   G4double theta3 = 360/(twopi*21);
-  for(G4int c=0;c<20;c++){  // cell in z-direction
+  for(G4int c=0;c<60;c++){  // cell in z-direction
     
     for (G4int p=0;p<twopi*21;p++){ // cell on x-y plane.
 
       G4Rotate3D rotZ(p*theta3*CLHEP::deg,G4ThreeVector(0,0,1));
-      G4Translate3D transXScint(G4ThreeVector(1./tan(theta3/2*CLHEP::deg)*CLHEP::cm+1.*CLHEP::cm,0*CLHEP::cm,-20*CLHEP::cm+c*2*CLHEP::cm));
+      G4Translate3D transXScint(G4ThreeVector(1./tan(theta3/2*CLHEP::deg)*CLHEP::cm+1.*CLHEP::cm,0*CLHEP::cm,-57.5*CLHEP::cm+c*2*CLHEP::cm));
   
       G4Transform3D transformScint = (rotZ)*(transXScint);
  
-      fDet = new G4PVPlacement(transformScint,lDet,"physScintillator",logicWorld,false,0,true);
+      fDet = new G4PVPlacement(transformScint,lDet,"physScintillator",logicWorld,false,0,false);
     }
     }
  
